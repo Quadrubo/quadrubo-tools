@@ -31,7 +31,7 @@ class PermissionSeeder extends Seeder
             'permission',
             'role',
             // -----
-            'computer',
+            'habit',
         ];
 
         foreach ($cruds as $crud) {

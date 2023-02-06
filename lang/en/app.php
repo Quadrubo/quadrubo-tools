@@ -53,6 +53,64 @@ return [
 
     'models' => [
 
+        'habit' => [
+
+            'label' => 'Habit',
+            'plural_label' => 'Habits',
+            'navigation_group' => 'Content',
+
+            'attributes' => [
+
+                'question' => [
+                    'label' => 'Question',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+                'notes' => [
+                    'label' => 'Notes',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+                'color' => [
+                    'label' => 'Color',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+                'times' => [
+                    'label' => 'Times',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+                'multiplier' => [
+                    'label' => 'Multiplier',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+                'unit' => [
+                    'label' => 'Unit',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+            ],
+
+            'relations' => [
+
+                'user' => [
+                    'label' => 'User',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+            ],
+
+        ],
+
         'user' => [
 
             'label' => 'User',
@@ -97,6 +155,12 @@ return [
 
                 'links' => [
                     'label' => 'Links',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+                'habits' => [
+                    'label' => 'Habits',
                     'helper' => '',
                     'hint' => '',
                 ],
