@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreHabitRequest;
 use App\Http\Requests\UpdateHabitRequest;
 use App\Models\Habit;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class HabitController extends Controller
 {
@@ -15,7 +17,13 @@ class HabitController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        $habits = $user->habits()->get();
+
+        return Inertia::render('Habits/Index', [
+            'habits' => $habits,
+        ]);
     }
 
     /**
