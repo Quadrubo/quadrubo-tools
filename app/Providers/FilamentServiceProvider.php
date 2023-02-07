@@ -32,20 +32,14 @@ class FilamentServiceProvider extends ServiceProvider
 
                 if ($label) {
                     $this->label(__($translatorPrefix.'label', $labelAttributes));
-                } else {
-                    $this->label = '';
                 }
 
                 if ($helper) {
                     $this->helperText(__($translatorPrefix.'helper', $helperAttributes));
-                } else {
-                    $this->helper = '';
                 }
 
                 if ($hint) {
                     $this->hint(__($translatorPrefix.'hint', $hintAttributes));
-                } else {
-                    $this->hint = '';
                 }
 
                 return $this;
