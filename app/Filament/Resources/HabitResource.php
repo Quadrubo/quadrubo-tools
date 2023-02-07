@@ -6,6 +6,7 @@ use App\Filament\Resources\HabitResource\Pages;
 use App\Filament\Resources\HabitResource\RelationManagers;
 use App\Models\Habit;
 use App\Models\User;
+use App\Traits\ResourceMetadata;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -20,11 +21,15 @@ use Stevebauman\Purify\Facades\Purify;
 
 class HabitResource extends Resource
 {
+    use ResourceMetadata;
+
     protected static ?string $model = Habit::class;
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationIcon = 'heroicon-o-check-circle';
+
+    protected static ?string $translationPrefix = 'app.models.habit';
 
     public static function form(Form $form): Form
     {
@@ -264,20 +269,5 @@ class HabitResource extends Resource
     public static function getGlobalSearchResultUrl(Model $record): string
     {
         return route('filament.resources.habits.view', ['record' => $record]);
-    }
-
-    public static function getModelLabel(): string
-    {
-        return __('app.models.habit.label') !== 'app.models.habit.label' ? __('app.models.habit.label') : parent::getModelLabel();
-    }
-
-    public static function getPluralModelLabel(): string
-    {
-        return __('app.models.habit.plural_label') !== 'app.models.habit.plural_label' ? __('app.models.habit.plural_label') : parent::getPluralModelLabel();
-    }
-
-    protected static function getNavigationGroup(): ?string
-    {
-        return __('app.models.habit.navigation_group') !== 'app.models.habit.navigation_group' ? __('app.models.habit.navigation_group') : parent::getNavigationGroup();
     }
 }
