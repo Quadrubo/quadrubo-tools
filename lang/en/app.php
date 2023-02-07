@@ -281,6 +281,10 @@ return [
                     'label' => 'Additional information',
                 ],
 
+                'frequency' => [
+                    'label' => 'Frequency',
+                ],
+
             ],
 
         ],
