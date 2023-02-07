@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Traits\ResourceMetadata;
 use Filament\Forms;
 use Filament\Resources\Form;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
@@ -149,6 +150,7 @@ class UserResource extends Resource
     {
         return [
             RelationManagers\RolesRelationManager::class,
+            RelationManagers\HabitsRelationManager::class,
         ];
     }
 
