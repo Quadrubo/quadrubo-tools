@@ -7,6 +7,7 @@ use App\Filament\Resources\HabitResource\RelationManagers;
 use App\Models\Habit;
 use App\Models\User;
 use App\Traits\ResourceMetadata;
+use Closure;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -31,6 +32,49 @@ class HabitResource extends Resource
 
     protected static ?string $translationPrefix = 'app.models.habit';
 
+    public static function setFrequencySentence(Closure $set, Closure $get)
+    {
+        $times = $get('times');
+        $multiplier = $get('multiplier');
+        $unit = $get('unit');
+
+        $timesPart = "";
+        $multiplierPart = "";
+        $unitPart = "";
+
+        $unitMap = [
+            'day' => 'days',
+            'week' => 'weeks',
+            'month' => 'months',
+            'year' => 'years',
+        ];
+
+        $sentence = "";
+
+        if ($times == 1) {
+            $timesPart = 'Once';
+        } else {
+            $timesPart = "$times times";
+        }
+
+        $sentence .= "$timesPart every";
+
+        if ($multiplier != 1) {
+            $multiplierPart = "$multiplier";
+            $sentence .= " $multiplierPart";
+        }
+
+        if ($multiplier != 1) {
+            $unitPart = $unitMap[$unit];
+        } else {
+            $unitPart = $unit;
+        }
+
+        $sentence .= " $unitPart";
+
+        $set('frequency_sentence', $sentence);
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -44,16 +88,17 @@ class HabitResource extends Resource
                                     ->maxLength(255)
                                     ->autofocus()
                                     ->localize('app.general.attributes.name'),
-                                Forms\Components\TextInput::make('question')
-                                    ->maxLength(255)
-                                    ->localize('app.models.habit.attributes.question'),
-                                Forms\Components\Textarea::make('notes')
-                                    ->maxLength(255)
-                                    ->localize('app.models.habit.attributes.notes'),
                                 Forms\Components\ColorPicker::make('color')
                                     ->required()
                                     ->default('#0000ff')
                                     ->localize('app.models.habit.attributes.color'),
+                                Forms\Components\TextInput::make('question')
+                                    ->maxLength(255)
+                                    ->columnSpan([
+                                        'default' => 1,
+                                        'sm' => 2,
+                                    ])
+                                    ->localize('app.models.habit.attributes.question'),
                                 Forms\Components\Select::make('user_id')
                                     ->required()
                                     ->relationship('user', 'name')
@@ -72,6 +117,9 @@ class HabitResource extends Resource
                                         return static::getCleanOptionString($user);
                                     })
                                     ->localize('app.models.habit.relations.user'),
+                                Forms\Components\Textarea::make('notes')
+                                    ->maxLength(255)
+                                    ->localize('app.models.habit.attributes.notes'),
                             ])
                             ->columns([
                                 'default' => 1,
@@ -83,17 +131,39 @@ class HabitResource extends Resource
                                     ->required()
                                     ->numeric()
                                     ->default(1)
+                                    ->minValue(1)
+                                    ->reactive()
+                                    ->afterStateUpdated(fn (Closure $set, Closure $get) => static::setFrequencySentence($set, $get))
                                     ->localize('app.models.habit.attributes.times'),
                                 Forms\Components\TextInput::make('multiplier')
                                     ->required()
                                     ->numeric()
                                     ->default(1)
+                                    ->minValue(1)
+                                    ->reactive()
+                                    ->afterStateUpdated(fn (Closure $set, Closure $get) => static::setFrequencySentence($set, $get))
                                     ->localize('app.models.habit.attributes.multiplier'),
                                 Forms\Components\Select::make('unit')
                                     ->required()
                                     ->default('day')
-                                    ->options(['day', 'week', 'month', 'year'])
+                                    ->options([
+                                        'day' => 'Day',
+                                        'week' => 'Week',
+                                        'month' => 'Month', 
+                                        'year' => 'Year',
+                                    ])
+                                    ->reactive()
+                                    ->afterStateUpdated(fn (Closure $set, Closure $get) => static::setFrequencySentence($set, $get))
                                     ->localize('app.models.habit.attributes.unit'),
+                                Forms\Components\TextInput::make('frequency_sentence')
+                                    ->disabled()
+                                    ->extraInputAttributes(['readonly' => true])          
+                                    ->afterStateHydrated(fn (Closure $set, Closure $get) => static::setFrequencySentence($set, $get))
+                                    ->columnSpan([
+                                        'default' => 1,
+                                        'sm' => 2,
+                                    ])
+                                    ->localize('app.models.habit.attributes.frequency_sentence'),
                             ])
                             ->columns([
                                 'default' => 1,

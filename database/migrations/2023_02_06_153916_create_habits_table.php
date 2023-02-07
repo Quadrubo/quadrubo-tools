@@ -25,6 +25,7 @@ return new class extends Migration
             $table->integer('times')->default(1);
             $table->integer('multiplier')->default(1);
             $table->enum('unit', ['day', 'week', 'month', 'year'])->default('day');
+            $table->string('frequency_sentence');
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 

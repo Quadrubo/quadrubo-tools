@@ -97,6 +97,12 @@ return [
                     'hint' => '',
                 ],
 
+                'frequency_sentence' => [
+                    'label' => 'Preview',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
             ],
 
             'relations' => [
