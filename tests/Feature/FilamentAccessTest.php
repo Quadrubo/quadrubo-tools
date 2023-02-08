@@ -54,6 +54,6 @@ class FilamentAccessTest extends TestCase
 
         // Test
         $response->assertStatus(302);
-        $response->assertRedirect(route('dashboard'));
+        $response->assertRedirect(route('habits.index'));
     }
 }
