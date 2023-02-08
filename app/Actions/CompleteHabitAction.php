@@ -15,6 +15,11 @@ class CompleteHabitAction
             return back();
         }
 
+        if (Auth::id() !== $user->id) {
+            //
+            return back();
+        }
+
         if (!$user->isMemberOfHabit($habit)) {
             //
             return back();
