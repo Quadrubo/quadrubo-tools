@@ -22,7 +22,7 @@ class RedirectFilament
  
         if ($user instanceof FilamentUser) {
             if (! $user->canAccessFilament()) {
-                return redirect()->route('dashboard');
+                return redirect()->route('habits.index');
             }
         }
     
