@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\UserResource\RelationManagers;
 
-use App\Filament\Resources\HabitResource;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -13,13 +12,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class HabitsRelationManager extends RelationManager
+class CompletedHabitsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'habits';
+    protected static string $relationship = 'completedHabits';
 
-    protected static ?string $inverseRelationship = 'members';
-
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'completed_on';
 
     public function isEditPage()
     {
@@ -30,7 +27,11 @@ class HabitsRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                //
+                Forms\Components\DatePicker::make('completed_on')
+                    ->required(),
+                Forms\Components\Select::make('habit_id')
+                    ->required()
+                    ->relationship('habit', 'name'),
             ]);
     }
 
@@ -38,41 +39,35 @@ class HabitsRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\BadgeColumn::make('id')
-                    ->localize('app.general.attributes.id', helper: false, hint: false),
-                Tables\Columns\TextColumn::make('name')
-                    ->localize('app.general.attributes.name', helper: false, hint: false),
+                Tables\Columns\TextColumn::make('completed_on'),
+                Tables\Columns\TextColumn::make('habit.name'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make()
-                    ->preloadRecordSelect(),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                    Tables\Actions\DetachAction::make(),
                 ]),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
-                Tables\Actions\DetachBulkAction::make(),
             ]);
-    }    
-
+    } 
+    
     public static function getModelLabel(): string
     {
-        return __('app.models.habit.label');
+        return __('app.models.completed_habit.label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.models.habit.plural_label');
+        return __('app.models.completed_habit.plural_label');
     }
 
     protected function canAssociate(): bool
@@ -85,15 +80,6 @@ class HabitsRelationManager extends RelationManager
         return $this->isEditPage() ? parent::canAttach() : false;
     }
 
-    protected function configureCreateAction(Tables\Actions\CreateAction $action): void
-    {
-        parent::configureCreateAction($action);
-
-        $action
-            ->action(null)
-            ->url(HabitResource::getUrl('create'));
-    }
-
     protected function canCreate(): bool
     {
         return $this->isEditPage() ? parent::canCreate() : false;
@@ -101,12 +87,12 @@ class HabitsRelationManager extends RelationManager
 
     protected function canDelete(Model $record): bool
     {
-        return false;
+        return $this->isEditPage() ? parent::canDelete($record) : false;
     }
 
     protected function canDeleteAny(): bool
     {
-        return false;
+        return $this->isEditPage() ? parent::canDeleteAny() : false;
     }
 
     protected function canDetach(Model $record): bool
@@ -129,15 +115,6 @@ class HabitsRelationManager extends RelationManager
         return $this->isEditPage() ? parent::canDissociateAny() : false;
     }
 
-    protected function configureEditAction(Tables\Actions\EditAction $action): void
-    {
-        parent::configureEditAction($action);
-
-        $action
-            ->action(null)
-            ->url(fn (Model $record): string => HabitResource::getUrl('edit', $record));
-    }
-
     protected function canEdit(Model $record): bool
     {
         return $this->isEditPage() ? parent::canEdit($record) : false;
@@ -145,12 +122,12 @@ class HabitsRelationManager extends RelationManager
 
     protected function canForceDelete(Model $record): bool
     {
-        return false;
+        return $this->isEditPage() ? parent::canForceDelete($record) : false;
     }
 
     protected function canForceDeleteAny(): bool
     {
-        return false;
+        return $this->isEditPage() ? parent::canForceDeleteAny() : false;
     }
 
     protected function canReplicate(Model $record): bool
@@ -168,18 +145,8 @@ class HabitsRelationManager extends RelationManager
         return $this->isEditPage() ? parent::canRestoreAny() : false;
     }
 
-    protected function configureViewAction(Tables\Actions\ViewAction $action): void
-    {
-        parent::configureViewAction($action);
-
-        $action
-            ->action(null)
-            ->url(fn (Model $record): string => HabitResource::getUrl('view', $record));
-    }
-
     protected function canView(Model $record): bool
     {
         return $this->can('view', $record);
     }
 }
-

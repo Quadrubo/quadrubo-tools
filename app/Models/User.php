@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -69,6 +70,23 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     public function habits()
     {
+        return $this->belongsToMany(Habit::class);
+    }
+
+    public function habitsOwned()
+    {
         return $this->hasMany(Habit::class);
+    }
+
+    public function completedHabits()
+    {
+        return $this->hasMany(CompletedHabit::class);
+    }
+
+    //
+
+    public function hasCompletedHabit(Habit $habit, Carbon $day)
+    {
+        return $this->completedHabits()->whereDate('completed_on', $day->format('Y-m-d'))->get()->count() !== 0;
     }
 }

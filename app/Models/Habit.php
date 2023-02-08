@@ -23,11 +23,22 @@ class Habit extends Model
         'multiplier',
         'unit',
         'frequency_sentence',
-        'user_id',
+        'visibility',
+        'owner_id',
     ]; 
 
-    public function user()
+    public function owner()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function members()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+    public function completedHabits()
+    {
+        return $this->hasMany(CompletedHabit::class);
     }
 }

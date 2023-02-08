@@ -27,7 +27,9 @@ return new class extends Migration
             $table->enum('unit', ['day', 'week', 'month', 'year'])->default('day');
             $table->string('frequency_sentence');
 
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->enum('visibility', ['private', 'invite', 'public'])->default('private');
+
+            $table->foreignId('owner_id')->constrained('users')->cascadeOnDelete();
 
             $table->timestamps();
         });

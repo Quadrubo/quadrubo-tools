@@ -32,6 +32,7 @@ class PermissionSeeder extends Seeder
             'role',
             // -----
             'habit',
+            'completed_habit',
         ];
 
         foreach ($cruds as $crud) {

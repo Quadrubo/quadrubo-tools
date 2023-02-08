@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\RelationManagers;
+namespace App\Filament\Resources\HabitResource\RelationManagers;
 
-use App\Filament\Resources\HabitResource;
-use App\Filament\Resources\UserResource\Pages\EditUser;
+use App\Filament\Resources\HabitResource\Pages\EditHabit;
+use App\Filament\Resources\UserResource;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -13,17 +13,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class HabitsRelationManager extends RelationManager
+class MembersRelationManager extends RelationManager
 {
-    protected static string $relationship = 'habits';
-
-    protected static ?string $inverseRelationship = 'members';
+    protected static string $relationship = 'members';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     public function isEditPage()
     {
-        return $this->pageClass === EditUser::class;
+        return $this->pageClass === EditHabit::class;
     }
 
     public static function form(Form $form): Form
@@ -42,6 +40,8 @@ class HabitsRelationManager extends RelationManager
                     ->localize('app.general.attributes.id', helper: false, hint: false),
                 Tables\Columns\TextColumn::make('name')
                     ->localize('app.general.attributes.name', helper: false, hint: false),
+                Tables\Columns\TextColumn::make('email')
+                    ->localize('app.models.user.attributes.email', helper: false, hint: false),
             ])
             ->filters([
                 //
@@ -67,12 +67,12 @@ class HabitsRelationManager extends RelationManager
 
     public static function getModelLabel(): string
     {
-        return __('app.models.habit.label');
+        return __('app.models.habit.relations.members.label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.models.habit.plural_label');
+        return __('app.models.habit.relations.members.plural_label');
     }
 
     protected function canAssociate(): bool
@@ -91,7 +91,7 @@ class HabitsRelationManager extends RelationManager
 
         $action
             ->action(null)
-            ->url(HabitResource::getUrl('create'));
+            ->url(UserResource::getUrl('create'));
     }
 
     protected function canCreate(): bool
@@ -135,7 +135,7 @@ class HabitsRelationManager extends RelationManager
 
         $action
             ->action(null)
-            ->url(fn (Model $record): string => HabitResource::getUrl('edit', $record));
+            ->url(fn (Model $record): string => UserResource::getUrl('edit', $record));
     }
 
     protected function canEdit(Model $record): bool
@@ -174,7 +174,7 @@ class HabitsRelationManager extends RelationManager
 
         $action
             ->action(null)
-            ->url(fn (Model $record): string => HabitResource::getUrl('view', $record));
+            ->url(fn (Model $record): string => UserResource::getUrl('view', $record));
     }
 
     protected function canView(Model $record): bool
@@ -182,4 +182,3 @@ class HabitsRelationManager extends RelationManager
         return $this->can('view', $record);
     }
 }
-

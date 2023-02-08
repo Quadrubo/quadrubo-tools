@@ -151,6 +151,7 @@ class UserResource extends Resource
         return [
             RelationManagers\RolesRelationManager::class,
             RelationManagers\HabitsRelationManager::class,
+            RelationManagers\CompletedHabitsRelationManager::class,
         ];
     }
 

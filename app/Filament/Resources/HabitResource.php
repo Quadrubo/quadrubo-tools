@@ -10,6 +10,7 @@ use App\Traits\ResourceMetadata;
 use Closure;
 use Filament\Forms;
 use Filament\Resources\Form;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
@@ -99,26 +100,12 @@ class HabitResource extends Resource
                                         'sm' => 2,
                                     ])
                                     ->localize('app.models.habit.attributes.question'),
-                                Forms\Components\Select::make('user_id')
-                                    ->required()
-                                    ->relationship('user', 'name')
-                                    ->searchable()
-                                    ->allowHtml()
-                                    ->getSearchResultsUsing(function (string $search) {
-                                        $users = User::where('name', 'like', "%{$search}%")->limit(50)->get();
-
-                                        return $users->mapWithKeys(function ($user) {
-                                            return [$user->getKey() => static::getCleanOptionString($user)];
-                                        })->toArray();
-                                    })
-                                    ->getOptionLabelUsing(function ($value): string {
-                                        $user = User::find($value);
-
-                                        return static::getCleanOptionString($user);
-                                    })
-                                    ->localize('app.models.habit.relations.user'),
                                 Forms\Components\Textarea::make('notes')
                                     ->maxLength(255)
+                                    ->columnSpan([
+                                        'default' => 1,
+                                        'sm' => 2,
+                                    ])
                                     ->localize('app.models.habit.attributes.notes'),
                             ])
                             ->columns([
@@ -164,6 +151,41 @@ class HabitResource extends Resource
                                         'sm' => 2,
                                     ])
                                     ->localize('app.models.habit.attributes.frequency_sentence'),
+                            ])
+                            ->columns([
+                                'default' => 1,
+                                'sm' => 2,
+                            ]),
+                        Forms\Components\Section::make(__('app.filament.forms.sections.authorization.label'))
+                            ->schema([
+                                Forms\Components\Select::make('owner_id')
+                                    ->required()
+                                    ->relationship('owner', 'name')
+                                    ->searchable()
+                                    ->allowHtml()
+                                    ->getSearchResultsUsing(function (string $search) {
+                                        $users = User::where('name', 'like', "%{$search}%")->limit(50)->get();
+
+                                        return $users->mapWithKeys(function ($user) {
+                                            return [$user->getKey() => static::getCleanOptionString($user)];
+                                        })->toArray();
+                                    })
+                                    ->getOptionLabelUsing(function ($value): string {
+                                        $user = User::find($value);
+
+                                        return static::getCleanOptionString($user);
+                                    })
+                                    ->localize('app.models.habit.relations.owner'),
+                                Forms\Components\Select::make('visibility')
+                                    ->required()
+                                    ->default('private')
+                                    ->options([
+                                        'private' => 'Private',
+                                        'invite' => 'Invite only',
+                                        'public' => 'Public', 
+                                    ])
+                                    ->reactive()
+                                    ->localize('app.models.habit.attributes.visibility'),
                             ])
                             ->columns([
                                 'default' => 1,
@@ -250,10 +272,10 @@ class HabitResource extends Resource
                     ->toggleable()
                     ->toggledHiddenByDefault()
                     ->localize('app.models.habit.attributes.unit', helper: false, hint: false),
-                Tables\Columns\TextColumn::make('user.name')
+                Tables\Columns\TextColumn::make('owner.name')
                     ->sortable()
                     ->searchable()
-                    ->localize('app.models.habit.relations.user', helper: false, hint: false),
+                    ->localize('app.models.habit.relations.owner', helper: false, hint: false),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d.m.Y')
                     ->sortable()
@@ -277,7 +299,8 @@ class HabitResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\MembersRelationManager::class,
+            RelationManagers\CompletedHabitsRelationManager::class,
         ];
     }
     

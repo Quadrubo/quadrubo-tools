@@ -7,6 +7,7 @@ import { router } from '@inertiajs/vue3';
 
 let props = defineProps({
     habits: Object,
+    date_range: Object,
 });
 
 // let wakeComputer = ((id) => {
@@ -51,39 +52,40 @@ let getRoundedClasses = ((key, length) => {
 
                     <!-- Header -->
                     <div class="grid grid-cols-2">
-                        <div>
-
-                        </div>
-                        <div class="flex flex-row justify-between grow bg-white rounded-t-lg shadow-sm text-xl p-4">
-                            <div v-for="day in ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su']">
-                                {{ day }}
+                        <div></div>
+                        <div class="flex flex-row justify-between grow bg-white rounded-t-lg shadow-sm text-lg py-2 px-4">
+                            <div v-for="day in date_range" class="flex flex-col text-center">
+                                <span>{{ day.D }}</span>
+                                <span>{{ day.j }}</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Habits -->
-                    <div v-for="habit, habit_key in habits" :key="habit_key">
-                        <div class="grid grid-cols-2 items-center bg-white shadow-sm text-xl" :class="getRoundedClasses(habit_key, habits.length)">
+                    <div v-for="habit, habit_key in habits" :key="habit_key" class="grid grid-cols-2 items-center bg-white shadow-sm text-xl" :class="getRoundedClasses(habit_key, habits.length)">
+                        <div class="flex flex-row items-center space-x-2 p-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
 
-                            <div class="flex flex-row items-center space-x-2 p-4">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-    
-    
-                                <div :style="'color: ' + habit.color + ';'">
-                                    {{ habit.name }}
-                                </div>
+
+                            <div :style="'color: ' + habit.color + ';'">
+                                {{ habit.name }}
                             </div>
+                        </div>
 
-                            <!-- Last 7 days -->
-                            <div class="flex flex-row justify-between grow p-4">
-                                <svg v-for="n in 7" class="text-gray-900 w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <!-- Last 7 days -->
+                        <div class="flex flex-row justify-between grow p-4">
+                            <div v-for="day in habit.days">
+                                <svg v-if="day.completed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>      
+                                <svg v-else class="text-gray-900 w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </div>
-
                         </div>
+
                     </div>
 
                 </div>

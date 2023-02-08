@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreHabitRequest;
 use App\Http\Requests\UpdateHabitRequest;
 use App\Models\Habit;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -17,12 +19,46 @@ class HabitController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
+        // last seven days
+        $dateRage = CarbonPeriod::create(Carbon::now()->subDays(6), Carbon::now());
+        
+        $habits = Auth::user()->habits()->get()->each(function ($habit) use ($dateRage) {
+            $days = [];
 
-        $habits = $user->habits()->get();
+            foreach($dateRage as $day) {
+                array_push($days, 
+                    [
+                        'day' => $day->format('Y-m-d'),
+                        'completed' => Auth::user()->hasCompletedHabit($habit, $day),
+                        'needs_completion' => false, // TODO
+                    ]
+                );
+            }
+
+            $days = array_reverse($days);
+
+            $habit['days'] = $days;
+
+            return $habit;
+        });
+
+        $days = [];
+
+        foreach($dateRage as $day) {
+            array_push($days, 
+                [
+                    'D' => $day->format('D'),
+                    'j' => $day->format('j'), 
+                    'date' => $day->format('Y-m-d'),
+                ]
+            );
+        }
+
+        $days = array_reverse($days);
 
         return Inertia::render('Habits/Index', [
             'habits' => $habits,
+            'date_range' => $days,
         ]);
     }
 

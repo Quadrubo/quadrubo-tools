@@ -53,6 +53,13 @@ return [
 
     'models' => [
 
+        'completed_habit' => [
+
+            'label' => 'Completed Habit',
+            'plural_label' => 'Completed Habits',
+
+        ],
+
         'habit' => [
 
             'label' => 'Habit',
@@ -103,12 +110,25 @@ return [
                     'hint' => '',
                 ],
 
+                'visibility' => [
+                    'label' => 'Visibility',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
             ],
 
             'relations' => [
 
-                'user' => [
-                    'label' => 'User',
+                'owner' => [
+                    'label' => 'Owner',
+                    'helper' => '',
+                    'hint' => '',
+                ],
+
+                'members' => [
+                    'label' => 'Member',
+                    'plural_label' => 'Members',
                     'helper' => '',
                     'hint' => '',
                 ],
