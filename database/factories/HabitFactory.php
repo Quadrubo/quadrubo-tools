@@ -31,7 +31,9 @@ class HabitFactory extends Factory
             'color' => $this->faker->hexColor(),
             'times' => $this->faker->randomDigitNotNull(),
             'multiplier' => $this->faker->randomDigitNotNull(),
-            'unit' => $this->faker->randomElement(['day', 'month', 'week', 'year'])
+            'unit' => $this->faker->randomElement(['day', 'month', 'week', 'year']),
+            'frequency_sentence' => $this->faker->sentence(),
+            'visibility' => $this->faker->randomElement(['private', 'invite', 'public']),
         ];
     }
 }
