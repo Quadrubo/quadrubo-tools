@@ -87,6 +87,11 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     public function hasCompletedHabit(Habit $habit, Carbon $day)
     {
-        return $this->completedHabits()->whereDate('completed_on', $day->format('Y-m-d'))->get()->count() !== 0;
+        return $this->completedHabits()->where('habit_id', $habit->id)->whereDate('completed_on', $day->format('Y-m-d'))->get()->count() !== 0;
+    }
+
+    public function isMemberOfHabit(Habit $habit)
+    {
+        return $this->habits()->exists($habit);
     }
 }

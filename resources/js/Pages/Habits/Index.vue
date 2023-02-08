@@ -10,6 +10,14 @@ let props = defineProps({
     date_range: Object,
 });
 
+let completeHabit = ((id, day) => {
+    router.post(route('habits.complete', {habit: id, day: day}));
+});
+
+let uncompleteHabit = ((id, day) => {
+    router.post(route('habits.uncomplete', {habit: id, day: day}));
+});
+
 // let wakeComputer = ((id) => {
 //     router.post(route('computers.wake', id));
 // });
@@ -77,10 +85,10 @@ let getRoundedClasses = ((key, length) => {
                         <!-- Last 7 days -->
                         <div class="flex flex-row justify-between grow p-4">
                             <div v-for="day in habit.days">
-                                <svg v-if="day.completed" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                <svg v-if="day.completed" @click="uncompleteHabit(habit.id, day.day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                 </svg>      
-                                <svg v-else class="text-gray-900 w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <svg v-else @click="completeHabit(habit.id, day.day)" class="text-gray-900 w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </div>
